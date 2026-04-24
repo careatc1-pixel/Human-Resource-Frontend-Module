@@ -1,11 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+
+import  { useState } from "react";
 import { Bell, ChevronDown, LogOut, Settings, User, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isPunchedIn, setIsPunchedIn] = useState(false);
+  const { t } = useTranslation();
+  
 
   return (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl z-50">
@@ -23,14 +27,15 @@ const Navbar = () => {
           rounded-2xl bg-card/70 backdrop-blur-xl 
           border border-border shadow-lg">
           <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
-            <button className="hover:text-foreground transition">Overview</button>
-            <button className="hover:text-foreground transition">Attendance</button>
-            <button className="hover:text-foreground transition">Tasks</button>
-            <button className="hover:text-foreground transition">Leave</button>
-            <button className="hover:text-foreground transition">Reports</button>
+            <button className="hover:text-foreground transition">{t("overview")}</button>
+            <button className="hover:text-foreground transition">{t("attendance")}</button>
+            <button className="hover:text-foreground transition">{t("tasks")}</button>
+            <button className="hover:text-foreground transition">{t("leave")}</button>
+            <button className="hover:text-foreground transition">{t("reports")}</button>
           </div>
 
           <div className="flex items-center gap-3">
+           
 
             {/* Bell */}
             <button className="relative p-1.5 rounded-full hover:bg-muted transition">
@@ -49,7 +54,7 @@ const Navbar = () => {
               }`}
             >
               <Clock className="w-3.5 h-3.5" />
-              {isPunchedIn ? "Punch Out" : "Punch In"}
+              {isPunchedIn ? t("nav.punchOut") : t("nav.punchIn")}
             </Button>
 
             {/* Avatar + Dropdown */}
@@ -69,17 +74,17 @@ const Navbar = () => {
                 <div className="absolute right-0 mt-2 w-48 rounded-xl bg-card border border-border shadow-xl py-1 text-sm">
                   <div className="px-4 py-2 border-b border-border">
                     <p className="font-semibold text-foreground">Hemant Bhatnagar</p>
-                    <p className="text-xs text-muted-foreground">HR Admin</p>
+                    <p className="text-xs text-muted-foreground">{t("nav.hrAdmin")}</p>
                   </div>
                   <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted transition text-left">
-                    <User className="w-4 h-4" /> My Profile
+                    <User className="w-4 h-4" /> {t("nav.myProfile")}
                   </button>
                   <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted transition text-left">
-                    <Settings className="w-4 h-4" /> My Settings
+                    <Settings className="w-4 h-4" /> {t("nav.mySettings")}
                   </button>
                   <div className="border-t border-border mt-1" />
                   <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted transition text-left text-red-500">
-                    <LogOut className="w-4 h-4" /> Logout
+                    <LogOut className="w-4 h-4" /> {t("nav.logout")}
                   </button>
                 </div>
               )}

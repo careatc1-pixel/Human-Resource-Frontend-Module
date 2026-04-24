@@ -12,11 +12,9 @@ export default function CrmLayout({
   children: React.ReactNode;
 }>) {
   return (
- <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-background text-foreground">
-          <Navbar />
-          {children}
-      </body>
-    </html>
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      {children}
+    </div>
   );
 }
