@@ -1,0 +1,189 @@
+'use client';
+
+import { cn } from '@/lib/utils'; // optional; replace with your own cn util or remove
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  Row,
+  RowSelectionState,
+  SortingState,
+  VisibilityState,
+} from '@tanstack/react-table';
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import * as React from 'react';
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Spinner } from '@/components/ui/spinner';
+
+// import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+
+export type DataTableProps<TData, TValue> = {
+  data: TData[];
+  columns: ColumnDef<TData, TValue>[];
+  getRowIdAction?:
+    | ((originalRow: TData, index: number, parent?: Row<TData> | undefined) => string)
+    | undefined;
+  stickyRightColumnId?: string; // e.g. "actions"
+  enableRowSelection?: boolean;
+  initialPageSize?: number;
+  visibilityStorageKey?: string; // persist column visibility in localStorage
+  isLoading?: boolean;
+  renderEmpty?: React.ReactNode; // custom empty state
+  className?: string;
+  onRowClickAction?: (row: TData) => void;
+};
+
+export function DataTable<TData, TValue>({
+  data,
+  columns,
+  getRowIdAction,
+  stickyRightColumnId,
+  enableRowSelection,
+  initialPageSize = 10,
+  visibilityStorageKey,
+  isLoading,
+  renderEmpty,
+  className,
+  onRowClickAction,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(() => {
+    if (!visibilityStorageKey) return {};
+    try {
+      const raw = localStorage.getItem(visibilityStorageKey);
+      return raw ? (JSON.parse(raw) as VisibilityState) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  React.useEffect(() => {
+    if (!visibilityStorageKey) return;
+    try {
+      localStorage.setItem(visibilityStorageKey, JSON.stringify(columnVisibility));
+    } catch {}
+  }, [columnVisibility, visibilityStorageKey]);
+
+  const table = useReactTable<TData>({
+    data,
+    columns,
+    state: { sorting, columnFilters, columnVisibility, rowSelection },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    enableRowSelection: !!enableRowSelection,
+    getRowId: getRowIdAction,
+    initialState: {
+      pagination: { pageIndex: 0, pageSize: initialPageSize },
+    },
+  });
+
+  const noRows = table.getRowModel().rows.length === 0;
+
+  return (
+    <div className={cn('w-full', className)}>
+      <div className="w-full">
+        {/* ✅ HEADER TABLE */}
+        <Table className="w-full table-fixed">
+          <TableHeader className="bg-white">
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id}>
+                {hg.headers.map((header) => {
+                  const stickyRight =
+                    stickyRightColumnId && header.column.id === stickyRightColumnId;
+
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className={cn(
+                        'bg-white',
+                        stickyRight && 'sticky right-0 z-40 text-center bg-white'
+                      )}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+        </Table>
+
+        {/* ✅ BODY SCROLL */}
+        <div className="overflow-auto max-h-[calc(100vh-350px)]">
+          <Table className="w-full table-fixed">
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={table.getAllLeafColumns().length}
+                    className="h-40 text-center"
+                  >
+                    <div className="flex justify-center items-center h-96">
+                      <Spinner />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : noRows ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={table.getAllLeafColumns().length}
+                    className="h-24 text-center"
+                  >
+                    {renderEmpty ?? 'No results.'}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    className={onRowClickAction ? 'cursor-pointer' : undefined}
+                    onClick={onRowClickAction ? () => onRowClickAction(row.original) : undefined}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const stickyRight =
+                        stickyRightColumnId && cell.column.id === stickyRightColumnId;
+
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cn(stickyRight && 'sticky right-0 z-10 bg-white text-center')}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    </div>
+  );
+}

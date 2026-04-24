@@ -2,8 +2,8 @@
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import en from "../locales/en.json";
-import ar from "../locales/ar.json";
+import en from "./locales/en.json";
+import ar from "./locales/ar.json";
 
 const LANGUAGE_KEY = "selected_language";
 const LANGUAGE_DIRECTION: Record<string, "ltr" | "rtl"> = {

@@ -1,8 +1,11 @@
+"use client"
 import PosterCard from '@/components/PosterCard'
 import SignupFormDemo from '@/components/signup-form-demo'
-import React from 'react'
+import React, { useState } from 'react'
 
 const Page = () => {
+  const [first, setfirst] = useState("")
+  
   return (
     <div className="flex items-center justify-center h-screen px-6">
       <div className="flex w-full max-w-7xl gap-10 items-center bg-slate-200 p-7 rounded-md ">
