@@ -9,6 +9,7 @@ export default function Page() {
     subText: c.industry,
     amount: c.revenue,
     date: c.joined,
+    employees: c.employees,
     status: c.status,
   }))
 

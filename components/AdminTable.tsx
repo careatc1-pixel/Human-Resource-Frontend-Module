@@ -27,9 +27,10 @@ type Row = {
   id: string;
   name: string;
   subText: string;
-  amount?: string;
+  amount?: number;
   date?: string;
-  status: string;
+  employees: number;
+  status: "Active"|"Trial"|"Suspended"|"Churned";
 };
 
 export default function AdminTable({ data }: { data: Row[] }) {
@@ -52,6 +53,7 @@ export default function AdminTable({ data }: { data: Row[] }) {
             <TableHead>Amount</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Employees</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -85,9 +87,13 @@ export default function AdminTable({ data }: { data: Row[] }) {
 
               <TableCell>{row.date}</TableCell>
 
+
               <TableCell>
                 <StatusBadge status={row.status} />
               </TableCell>
+              
+              <TableCell
+              >{row.employees}</TableCell>
 
               <TableCell>
                 <div className="flex gap-3">
@@ -96,6 +102,7 @@ export default function AdminTable({ data }: { data: Row[] }) {
                   <Trash2 className="w-4 h-4 text-red-500 cursor-pointer" />
                 </div>
               </TableCell>
+              
             </TableRow>
           ))}
         </TableBody>
