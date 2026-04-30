@@ -89,7 +89,7 @@ export default function AdminTable({ data }: { data: Row[] }) {
 
 
               <TableCell>
-                <StatusBadge status={row.status} />
+                <StatusBadge variant="admin" status={row.status} />
               </TableCell>
               
               <TableCell
