@@ -5,19 +5,23 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ShieldCheck, LockKeyhole, UserRound } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
+import { useSigninForm } from "@/app/[lang]/(auth)/signin/_components/useSigninForm";
+type Props = ReturnType<typeof useSigninForm>;
 
-export default function SignupFormDemo() {
+export default function SigninForm({
+  state: { data, setField },
+  errors,
+  loading,
+  validateField,
+  handleSubmit,
+}: Props) {
   const { t } = useTranslation();
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Admin login submitted");
-  };
   return (
     <div className="mx-auto w-full max-w-md rounded-none bg-white p-4 shadow-input md:rounded-2xl md:p-8 dark:bg-black">
       <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs font-medium text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
         <ShieldCheck className="h-4 w-4" />
-        {t("auth.adminAccess")}
+        Secure Access
       </div>
 
       <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
@@ -27,7 +31,13 @@ export default function SignupFormDemo() {
         {t("auth.adminDescription")}
       </p>
 
-      <form className="my-8" onSubmit={handleSubmit}>
+      <form
+        className="my-8"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          await handleSubmit();
+        }}
+      >
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">{t("auth.adminEmail")}</Label>
           <div className="relative">
@@ -38,18 +48,25 @@ export default function SignupFormDemo() {
               type="email"
               className="pl-10"
               autoComplete="email"
+              value={data.email}
+              onChange={(e) => setField("email", e.target.value)}
+              onBlur={(e) => validateField?.("email", e.target.value)}
             />
+
+            {errors.email && (
+              <p className="text-xs text-red-500">{errors.email[0]}</p>
+            )}
           </div>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <div className="flex items-center justify-between gap-3">
             <Label htmlFor="password">{t("auth.password")}</Label>
-            <a
+            <Link
               href="/forgot-password"
               className="text-xs text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
             >
               {t("auth.forgotPassword")}
-            </a>
+            </Link>
           </div>
           <div className="relative">
             <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
@@ -59,19 +76,25 @@ export default function SignupFormDemo() {
               type="password"
               className="pl-10"
               autoComplete="current-password"
+              value={data.password}
+              onChange={(e) => setField("password", e.target.value)}
+              onBlur={(e) => validateField?.("password", e.target.value)}
             />
+
+            {errors.password && (
+              <p className="text-xs text-red-500">{errors.password[0]}</p>
+            )}
           </div>
         </LabelInputContainer>
+
         <button
-          className="group/btn relative block h-10 w-full rounded-md bg-linear-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
+          disabled={loading}
+          className="group/btn relative block h-10 w-full rounded-md bg-linear-to-br from-black to-neutral-600 font-medium text-white disabled:opacity-60"
           type="submit"
         >
-          {t("auth.signInAdminPanel")} &rarr;
+          {loading ? "Signing in..." : "Sign In"} →
           <BottomGradient />
         </button>
-        <p className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
-          {t("auth.authorizedDevice")}
-        </p>
       </form>
     </div>
   );

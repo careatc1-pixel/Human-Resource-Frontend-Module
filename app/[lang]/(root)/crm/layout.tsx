@@ -1,31 +1,26 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/common_components/Navbar";
-import { AppSidebar } from "@/components/ui/app-sidebar";
 
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppNavbar, AppSidebar } from "@/global/elements/navbar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   title: "CRM",
   description: "Human Resource CRM workspace",
 };
 
-export default function CrmLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+
+export default function CrmLayout({ children }: { children: React.ReactNode }) {
+
   return (
-    <SidebarProvider defaultOpen>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="sticky top-0 z-40 flex gap-2 px-4">
-          <SidebarTrigger />
-        </header>
-        <div className="flex min-h-[calc(100svh-3.5rem)] flex-1 flex-col p-4 md:p-6">
-          <Navbar/>
-          {children}
+   <SidebarProvider>   {/* ✅ THIS FIXES YOUR ERROR */}
+      <div className="flex h-screen w-full overflow-hidden">
+        <AppSidebar />
+
+        <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+          <AppNavbar />
+          <main className="flex-1 overflow-y-auto p-4">{children}</main>
         </div>
-      </SidebarInset>
+      </div>
     </SidebarProvider>
   );
 }
