@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/register", "/forgot-password", "/admin","/crm","/adminpanel"];
+const PUBLIC_PATHS = ["/login", "/register", "/forgot-password", "/admin","/crm","/adminpanel", "/attendance"];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -15,6 +15,7 @@ export function proxy(request: NextRequest) {
 
   const loginPath = `/${lang}/signin`;
   const homePath = `/${lang}`;
+
 
   if (!isPublicRoute && !token) {
     if (pathname !== loginPath) {

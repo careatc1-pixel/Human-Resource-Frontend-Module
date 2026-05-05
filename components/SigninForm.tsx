@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ShieldCheck, LockKeyhole, UserRound } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useSigninForm } from "@/app/[lang]/(auth)/signin/_components/useSigninForm";
 type Props = ReturnType<typeof useSigninForm>;
 
@@ -17,6 +18,9 @@ export default function SigninForm({
   handleSubmit,
 }: Props) {
   const { t } = useTranslation();
+  const params = useParams<{ lang?: string }>();
+  const lang = typeof params?.lang === "string" ? params.lang : "en";
+
   return (
     <div className="mx-auto w-full max-w-md rounded-none bg-white p-4 shadow-input md:rounded-2xl md:p-8 dark:bg-black">
       <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs font-medium text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
@@ -62,7 +66,7 @@ export default function SigninForm({
           <div className="flex items-center justify-between gap-3">
             <Label htmlFor="password">{t("auth.password")}</Label>
             <Link
-              href="/forgot-password"
+              href={`/${lang}/forgot-password`}
               className="text-xs text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
             >
               {t("auth.forgotPassword")}
@@ -96,6 +100,16 @@ export default function SigninForm({
           <BottomGradient />
         </button>
       </form>
+
+      <div className="text-center  text-neutral-600 dark:text-neutral-300">
+        New Organization?{" "}
+        <Link href={`/${lang}/register`} className="text-blue-500 hover:text-blue-700">
+          Register here
+        </Link>
+      </div>
+
+
+      
     </div>
   );
 }

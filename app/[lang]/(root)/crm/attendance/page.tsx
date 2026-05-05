@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sheet,SheetContent,SheetDescription, SheetHeader, SheetTitle,} from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import StatusBadge from "@/components/StatusBadge"
 import { departments, employees, leaveRequests, todayStats, avatarColors, monthlyStatsConfig, type Employee } from "@/data/attendanceData"
 
 interface Props {
@@ -197,7 +196,7 @@ export default function AttendancePage() {
                     </TableCell>
                     <TableCell>{employee.department}</TableCell>
                     <TableCell>
-                      <StatusBadge variant="attendance" status={employee.status} />
+                     
                     </TableCell>
                     <TableCell>{employee.punchIn ?? "—"}</TableCell>
                     <TableCell>{employee.punchOut ?? "—"}</TableCell>

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ShieldCheck, LockKeyhole, UserRound, KeyRound } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useSigninForm } from "./useAdminForm";
 const LabelInputContainer = ({
   className,
@@ -19,6 +20,8 @@ const BottomGradient = () => (
 
 
 const AdminLoginForm = () => {
+  const params = useParams<{ lang?: string }>();
+  const lang = typeof params?.lang === "string" ? params.lang : "en";
      const {
     state: { data, setField },
     errors,
@@ -75,7 +78,7 @@ const AdminLoginForm = () => {
           <div className="flex items-center justify-between gap-3">
             <Label htmlFor="password">Password</Label>
             <Link
-              href="/forgot-password"
+              href={`/${lang}/forgot-password`}
               className="text-xs text-neutral-500 hover:text-neutral-700"
             >
               Forgot password?

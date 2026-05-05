@@ -3,6 +3,7 @@ import CardPagination from "@/global/elements/table/CardPagination";
 import AdminPanelTable from "./_components/AdminPanelTable";
 import { companiesData } from "@/data/companies";
 import { Plus } from "lucide-react";
+import AddCompany from "@/components/AddCompany"
 
 const page = () => {
   return (
