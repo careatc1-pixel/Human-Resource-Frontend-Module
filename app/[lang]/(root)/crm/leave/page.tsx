@@ -1,9 +1,5 @@
-import React from 'react'
+import {LeaveApplicationForm} from "./_components/LeaveApplicationForm";
 
-const page = () => {
-  return (
-    <div>leave</div>
-  )
+export default function LeavePage() {
+  return <LeaveApplicationForm />;
 }
-
-export default page
