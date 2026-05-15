@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import ClientProvider from "@/lib/ClientProvider";
+// import ClientProvider from "@/lib/ClientProvider";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import ReactQueryProvider from "@/lib/queryProvider";
 
 
 
@@ -23,7 +24,7 @@ export default function RootLayout({
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body>
   
-        <ClientProvider>{children}</ClientProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
       </body>
     </html>
   );

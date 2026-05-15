@@ -1,9 +1,15 @@
-import React from 'react'
+import type { Metadata } from "next";
+import { OnboardingForm } from "./_components/OnboardingForm";
 
-const page = () => {
+export const metadata: Metadata = {
+  title: "Onboarding",
+  description: "Employee onboarding form for new hires.",
+};
+
+export default function OnboardingPage() {
   return (
-    <div>Onboarding</div>
-  )
+    <div className="space-y-6 pb-10">
+      <OnboardingForm />
+    </div>
+  );
 }
-
-export default page
