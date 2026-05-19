@@ -1,6 +1,5 @@
-import { refreshAccessToken } from '@/services/users';
-import axios, { AxiosHeaders, AxiosInstance } from 'axios';
-const BASE_URL = '/api';
+import axios, { AxiosHeaders, AxiosInstance } from "axios";
+const BASE_URL = "/api";
 const clientCache: Record<string, AxiosInstance> = {};
 
 export const SESSION_TIMEOUT = 30 * 60 * 1000;
@@ -14,23 +13,23 @@ export function startSessionTimer() {
 }
 
 export function logoutUser() {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     sessionStorage.clear();
 
-    document.cookie = 'accessToken=; path=/; max-age=0;';
-    document.cookie = 'refreshToken=; path=/; max-age=0;';
+    document.cookie = "accessToken=; path=/; max-age=0;";
+    document.cookie = "refreshToken=; path=/; max-age=0;";
 
-    if (window.location.pathname !== '/en/login') {
-      window.location.href = '/en/login';
+    if (window.location.pathname !== "/en/login") {
+      window.location.href = "/en/login";
     }
   }
 }
 
 export function setAuthTokens(accessToken: string, refreshToken: string) {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
-  sessionStorage.setItem('accessToken', accessToken);
-  sessionStorage.setItem('refreshToken', refreshToken);
+  sessionStorage.setItem("accessToken", accessToken);
+  sessionStorage.setItem("refreshToken", refreshToken);
 
   document.cookie = `accessToken=${accessToken}; path=/; max-age=${60 * 60};`;
   document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${60 * 60 * 24 * 7};`;
@@ -38,7 +37,7 @@ export function setAuthTokens(accessToken: string, refreshToken: string) {
   startSessionTimer();
 }
 
-if (typeof window !== 'undefined' && sessionStorage.getItem('accessToken')) {
+if (typeof window !== "undefined" && sessionStorage.getItem("accessToken")) {
   startSessionTimer();
 }
 function attachSharedInterceptors(client: AxiosInstance) {
@@ -61,23 +60,21 @@ function attachSharedInterceptors(client: AxiosInstance) {
     failedQueue = [];
   };
 
-
   client.interceptors.request.use(
     (config) => {
-      if (typeof window !== 'undefined') {
-        const token = sessionStorage.getItem('accessToken');
+      if (typeof window !== "undefined") {
+        const token = sessionStorage.getItem("accessToken");
         if (token) {
           const headers = new AxiosHeaders(config.headers);
-          headers.set('Authorization', `Bearer ${token}`);
+          headers.set("Authorization", `Bearer ${token}`);
           config.headers = headers;
           startSessionTimer();
         }
       }
       return config;
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
   );
-
 
   client.interceptors.response.use(
     (response) => response,
@@ -106,7 +103,7 @@ function attachSharedInterceptors(client: AxiosInstance) {
         isRefreshing = true;
 
         try {
-          const refreshToken = sessionStorage.getItem('refreshToken');
+          const refreshToken = sessionStorage.getItem("refreshToken");
 
           if (!refreshToken) {
             logoutUser();
@@ -114,19 +111,19 @@ function attachSharedInterceptors(client: AxiosInstance) {
             return Promise.reject(error);
           }
 
-          const response = await refreshAccessToken();
+        //   const response = await refreshAccessToken();
 
-          const newAccessToken = response.access_token;
+        //   const newAccessToken = response.access_token;
 
-          const newRefreshToken = response.refresh_token;
+        //   const newRefreshToken = response.refresh_token;
 
-          setAuthTokens(newAccessToken, newRefreshToken);
+        //   setAuthTokens(newAccessToken, newRefreshToken);
 
-          processQueue(null, newAccessToken);
+        //   processQueue(null, newAccessToken);
 
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        //   originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-          return client(originalRequest);
+        //   return client(originalRequest);
         } catch (refreshError) {
           processQueue(refreshError, null);
 
@@ -139,8 +136,8 @@ function attachSharedInterceptors(client: AxiosInstance) {
       }
 
       if (
-        typeof error?.response?.data === 'string' &&
-        error.response.data.includes('<!DOCTYPE html>')
+        typeof error?.response?.data === "string" &&
+        error.response.data.includes("<!DOCTYPE html>")
       ) {
         const matches = error.response.data.match(/<pre>Error: ([^<]+)<br>/);
 
@@ -150,13 +147,13 @@ function attachSharedInterceptors(client: AxiosInstance) {
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 }
 function createClient(service: string, attachInterceptors = true) {
   const client = axios.create({
     baseURL: `${BASE_URL}/${service}`,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
     withCredentials: true,
   });
 
@@ -164,9 +161,12 @@ function createClient(service: string, attachInterceptors = true) {
   return client;
 }
 
-export function getAPI(service: string, withInterceptors = true): AxiosInstance {
+export function getAPI(
+  service: string,
+  withInterceptors = true,
+): AxiosInstance {
   const key = service.toLowerCase();
-  const cacheKey = `${key}|${withInterceptors ? 'with' : 'without'}`;
+  const cacheKey = `${key}|${withInterceptors ? "with" : "without"}`;
 
   if (clientCache[cacheKey]) return clientCache[cacheKey];
 
@@ -175,13 +175,13 @@ export function getAPI(service: string, withInterceptors = true): AxiosInstance 
   return client;
 }
 
-export let baseAPI: AxiosInstance = getAPI('alarms');
-clientCache['DEFAULT'] = baseAPI;
+export let baseAPI: AxiosInstance = getAPI("alarms");
+clientCache["DEFAULT"] = baseAPI;
 
 export function setBaseAPI(service: string) {
   const client = getAPI(service);
   baseAPI = client;
-  clientCache['DEFAULT'] = client;
+  clientCache["DEFAULT"] = client;
 }
 
 export function getBaseAPI(): AxiosInstance {
